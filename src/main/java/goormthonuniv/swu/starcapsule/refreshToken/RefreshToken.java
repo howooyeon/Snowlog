@@ -10,7 +10,6 @@ import lombok.*;
 @Entity
 @Table(name = "refresh_token")
 public class RefreshToken {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refresh_token_id", updatable = false)
@@ -30,7 +29,6 @@ public class RefreshToken {
 
     public RefreshToken update(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
-
         return this;
     }
 }

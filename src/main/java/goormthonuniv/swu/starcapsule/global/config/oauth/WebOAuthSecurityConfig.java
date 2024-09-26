@@ -2,6 +2,7 @@ package goormthonuniv.swu.starcapsule.global.config.oauth;
 
 import goormthonuniv.swu.starcapsule.global.config.jwt.TokenProvider;
 import goormthonuniv.swu.starcapsule.refreshToken.RefreshTokenRepository;
+import goormthonuniv.swu.starcapsule.snowball.SnowballService;
 import goormthonuniv.swu.starcapsule.user.UserRepository;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class WebOAuthSecurityConfig {
     private final OAuth2UserCustomService oAuth2UserCustomService;
     private final TokenProvider tokenProvider;
     private final UserService userService;
+    private final SnowballService snowballService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
