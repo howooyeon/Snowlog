@@ -36,7 +36,7 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .setSubject(user.getNickname())
+                .setSubject(user.getEmail())
                 .claim("id", user.getId())
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
                 .compact();
@@ -67,9 +67,9 @@ public class TokenProvider {
 
     private User getUserFromClaims(Claims claims) {
         // Claims에서 사용자 정보를 추출하고 User 객체를 생성하거나 조회하는 로직 구현
-        String nickname = claims.getSubject();
+        String email = claims.getSubject();
         // 예시: 사용자 정보를 데이터베이스에서 조회
-        return new User(nickname); // 이메일을 username으로 사용
+        return new User(email);
     }
 
     private Claims getClaims(String token) {

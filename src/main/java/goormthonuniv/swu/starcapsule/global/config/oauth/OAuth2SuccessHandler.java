@@ -4,6 +4,7 @@ import goormthonuniv.swu.starcapsule.global.config.cookie.CookieUtil;
 import goormthonuniv.swu.starcapsule.global.config.jwt.TokenProvider;
 import goormthonuniv.swu.starcapsule.refreshToken.RefreshToken;
 import goormthonuniv.swu.starcapsule.refreshToken.RefreshTokenRepository;
+import goormthonuniv.swu.starcapsule.snowball.SnowballService;
 import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserRepository;
 import goormthonuniv.swu.starcapsule.user.UserService;
@@ -29,7 +30,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
-    public static final String HOME_REDIRECT_PATH = "http://localhost:3000/";
+    public static final String MAKE_SNOWBALL_REDIRECT_PATH = "http://localhost:3000/";
+    public static final String MY_SNOWBALL_REDIRECT_PATH = "http://localhost:3000/";
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -41,12 +43,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String nickname;
+        String nickname, email;
 
         nickname = getKakaoNickname(oAuth2User);
+        email = getKakaoEmail(oAuth2User);
 
-        // 사용자 닉네임으로 사용자 정보를 조회합니다.
-        User user = userService.findByNickname(nickname);
+        User user = userService.findByEmail(email);
 
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         saveRefreshToken(user, refreshToken);
@@ -56,11 +58,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String targetUrl = "";
 
-        targetUrl = getTargetUrl(accessToken);
-        clearAuthenticationAttributes(request, response);
+        if(user.getSnowball() == null){
+            targetUrl = getMakeSnowballPageUrl(accessToken);
+        }else{
+            targetUrl = getMySnowballPageUrl(accessToken);
+        }
 
+        clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
+    }
+
+    private String getKakaoEmail(OAuth2User oAuth2User) {
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+
+        String email = (String) kakaoAccount.get("email");
+        return email;
     }
 
     private String getKakaoNickname(OAuth2User oAuth2User) {
@@ -96,8 +110,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
-    private String getTargetUrl(String token) {
-        return UriComponentsBuilder.fromUriString(HOME_REDIRECT_PATH)
+    private String getMakeSnowballPageUrl(String token) {
+        return UriComponentsBuilder.fromUriString(MAKE_SNOWBALL_REDIRECT_PATH)
+                .queryParam("token", token)
+                .build()
+                .toUriString();
+    }
+
+    private String getMySnowballPageUrl(String token) {
+        return UriComponentsBuilder.fromUriString(MY_SNOWBALL_REDIRECT_PATH)
                 .queryParam("token", token)
                 .build()
                 .toUriString();

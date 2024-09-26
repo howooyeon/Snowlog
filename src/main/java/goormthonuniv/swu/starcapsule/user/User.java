@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.user;
 
 import goormthonuniv.swu.starcapsule.refreshToken.RefreshToken;
+import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,20 +20,29 @@ public class User implements UserDetails {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "nickname", unique = true)
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "nickname")
     private String nickname;
 
     @OneToOne(cascade = CascadeType.PERSIST)//User를 저장할 때 관련된 RefreshToken도 함께 저장
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
+    @OneToOne
+    @JoinColumn(name = "snowball_id")
+    private Snowball snowball;
+
     @Builder
-    public User(String nickname) {
-        this.nickname = nickname;
+    public User(String email) {
+        this.email = email;
     }
-    public User updateNickname(String nickname) {
+
+    @Builder
+    public User(String email, String nickname) {
+        this.email = email;
         this.nickname = nickname;
-        return this;
     }
 
     @Override

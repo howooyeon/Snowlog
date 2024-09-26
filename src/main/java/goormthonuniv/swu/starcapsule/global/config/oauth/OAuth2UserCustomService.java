@@ -34,13 +34,11 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
+        String email = (String) kakaoAccount.get("email");
         String nickname = (String) profile.get("nickname");
 
-        User user = userRepository.findByNickname(nickname)
-                .map(entity -> entity.updateNickname(nickname))
-                .orElse(User.builder()
-                        .nickname(nickname)
-                        .build());
+        User user = userRepository.findByEmail(email)
+                .orElse(new User(email,nickname));
 
         return userRepository.save(user);
     }
