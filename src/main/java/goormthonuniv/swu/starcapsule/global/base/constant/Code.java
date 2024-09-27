@@ -13,26 +13,49 @@ import java.util.function.Predicate;
 @RequiredArgsConstructor
 public enum Code {
 
-    // 충돌 방지를 위한 Code format
-    // X1XXX: 제이
-    // X2XXX: 셀리나
-    // X3XXX: 메이슨
-    // ex) 메이슨이 닉네임 중복 에러코드를 만든다면
-    // USER_NICKNAME_DUPLICATED(13010, HttpStatus.BAD_REQUEST, "User nickname duplicated"),
+    OK("0000", HttpStatus.OK, "Ok"),
 
-    OK(0, HttpStatus.OK, "Ok"),
+    /*
+     * Request 관련 오류
+     * HEAD NAME - RQ (Request)
+     * */
+    BAD_REQUEST("RQ000", HttpStatus.BAD_REQUEST, "Bad request"),
+    VALIDATION_ERROR("RQ001", HttpStatus.BAD_REQUEST, "Validation error"),
+    LANGUAGE_NOT_SUPPORTED("RQ002", HttpStatus.BAD_REQUEST, "Language not supported"),
 
-    BAD_REQUEST(10000, HttpStatus.BAD_REQUEST, "Bad request"),
-    VALIDATION_ERROR(10001, HttpStatus.BAD_REQUEST, "Validation error"),
-    NOT_FOUND(10002, HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    /*
+     * Member 관련 오류
+     * HEAD NAME - M (Member)
+     * */
+    DUPLICATED_NICKNAME("M001", HttpStatus.BAD_REQUEST, "Duplicate nickname"),
+    MEMBER_NOT_FOUND("M002", HttpStatus.NOT_FOUND, "Member not found"),
+    MEMBER_WITHOUT_PRIVILEGE("M003", HttpStatus.FORBIDDEN, "Member without privilege"),
 
-    INTERNAL_ERROR(20000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
-    DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
+    /*
+     * 서버 관련 오류
+     * HEAD NAME - S (Server)
+     * */
+    INTERNAL_ERROR("S000", HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
+    KAKAO_SERVER_ERROR("S001", HttpStatus.INTERNAL_SERVER_ERROR , "Kakao server error"),
 
-    UNAUTHORIZED(40000, HttpStatus.UNAUTHORIZED, "User unauthorized");
+    /*
+     * 인증 관련 오류
+     * HEAD NAME - AUTH (Authorization)
+     * */
+    UNAUTHORIZED("AUTH000", HttpStatus.UNAUTHORIZED, "User unauthorized"),
+    NOT_REGISTERED("AUTH001", HttpStatus.OK, "Need registration"),
+    ALREADY_REGISTERED("AUTH002", HttpStatus.BAD_REQUEST, "You're already registered"),
+    INVALID_REFRESH_TOKEN("AUTH003", HttpStatus.UNAUTHORIZED, "Invalid refresh token. Sign in again"),
+    REFRESH_TOKEN_NOT_FOUND("AUTH004", HttpStatus.UNAUTHORIZED, "Refresh token not found. Sign in again"),
+    MALFORMED_JWT("AUTH005", HttpStatus.UNAUTHORIZED, "Malformed jwt format"),
+    EXPIRED_JWT("AUTH006", HttpStatus.UNAUTHORIZED, "Jwt expired. Reissue it"),
+    UNSUPPORTED_JWT("AUTH007", HttpStatus.UNAUTHORIZED, "Unsupported jwt format"),
+    ILLEGAL_JWT("AUTH008", HttpStatus.UNAUTHORIZED, "Illegal jwt format"),
+    FORBIDDEN("AUTH009", HttpStatus.FORBIDDEN, "Forbidden"),
+    NO_CREDENTIALS_IN_CONTEXT("AUTH010", HttpStatus.UNAUTHORIZED, "No credentials in Security Context")
+    ;
 
-
-    private final Integer code;
+    private final String code;
     private final HttpStatus httpStatus;
     private final String message;
 
@@ -64,10 +87,5 @@ public enum Code {
                         return Code.OK;
                     }
                 });
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s (%d)", this.name(), this.getCode());
     }
 }
