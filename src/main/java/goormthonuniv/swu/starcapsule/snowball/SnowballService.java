@@ -27,6 +27,16 @@ public class SnowballService {
         return snowball;
     }
 
+    @Transactional
+    public Snowball changeSnowballName(String email, String snowballName){
+        User user = userService.findByEmail(email);
+
+        Snowball snowball = user.getSnowball();
+        snowball.updateSnowballName(snowballName);
+
+        return snowball;
+    }
+
     public String makeShareLink(){
         return "http://localhost:3000/api/capsule/" + UUID.randomUUID().toString();
     }

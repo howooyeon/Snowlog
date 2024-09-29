@@ -31,4 +31,7 @@ public class Snowball {
         this.user = user;
     }
 
+    public void updateSnowballName(String snowballName) {
+        this.snowballName = snowballName;
+    }
 }
