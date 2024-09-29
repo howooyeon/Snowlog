@@ -38,4 +38,21 @@ public class SnowballController {
         Snowball snowball = snowballService.makeSnowball(user.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
     }
+
+    @Operation(summary = "스노우볼 이름 수정", description = "나의 스노우볼 이름을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "나의 스노우볼 이름 수정 성공",
+                    content = @Content(schema = @Schema(implementation = SnowballResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @PostMapping("/changeSnowballName")
+    public ResponseEntity<?> changeSnowballName(@RequestHeader("Authorization") String token,
+                                                @RequestParam("name") String snowballName){
+        User user = userService.findByAccessToken(token);
+        Snowball snowball = snowballService.changeSnowballName(user.getEmail(), snowballName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
+    }
 }
