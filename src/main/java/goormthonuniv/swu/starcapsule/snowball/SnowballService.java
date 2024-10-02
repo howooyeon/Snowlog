@@ -40,4 +40,9 @@ public class SnowballService {
     public String makeShareLink(){
         return "http://localhost:3000/api/capsule/" + UUID.randomUUID().toString();
     }
+
+    public Snowball findBySharedLink(String id){
+        return snowballRepository.findBySharedLink("http://localhost:3000/api/capsule/"+id)
+                .orElseThrow(() -> new IllegalArgumentException("Unexpected snowball"));
+    }
 }

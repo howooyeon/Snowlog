@@ -1,8 +1,12 @@
 package goormthonuniv.swu.starcapsule.snowball;
 
+import goormthonuniv.swu.starcapsule.memory.Memory;
 import goormthonuniv.swu.starcapsule.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -24,6 +28,9 @@ public class Snowball {
     @OneToOne(mappedBy = "snowball")
     private User user;
 
+    @OneToMany(mappedBy = "snowball")
+    private List<Memory> memories = new ArrayList<>();
+
     @Builder
     public Snowball(String snowballName, String sharedLink, User user) {
         this.snowballName = snowballName;
@@ -34,4 +41,5 @@ public class Snowball {
     public void updateSnowballName(String snowballName) {
         this.snowballName = snowballName;
     }
+
 }
