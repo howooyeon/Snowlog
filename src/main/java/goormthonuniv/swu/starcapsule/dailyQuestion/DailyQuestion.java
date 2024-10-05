@@ -1,10 +1,8 @@
-package goormthonuniv.swu.starcapsule.myMemory;
+package goormthonuniv.swu.starcapsule.dailyQuestion;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -19,13 +17,13 @@ public class DailyQuestion {
     private Long id;
 
     @Column(nullable = false)
-    private String text; // 질문 내용
+    private String question;
 
     @Column(nullable = false, unique = true)
-    private LocalDate date; // 해당 질문이 사용되는 날짜
+    private LocalDate date;
 
-    public DailyQuestion(String text, LocalDate date) {
-        this.text = text;
+    public DailyQuestion(String question, LocalDate date) {
+        this.question = question;
         this.date = date;
     }
 }

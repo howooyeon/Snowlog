@@ -1,4 +1,4 @@
-package goormthonuniv.swu.starcapsule.myMemory;
+package goormthonuniv.swu.starcapsule.dailyQuestion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

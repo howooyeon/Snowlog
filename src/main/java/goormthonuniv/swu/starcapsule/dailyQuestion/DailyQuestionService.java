@@ -1,5 +1,6 @@
-package goormthonuniv.swu.starcapsule.myMemory;
+package goormthonuniv.swu.starcapsule.dailyQuestion;
 
+import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

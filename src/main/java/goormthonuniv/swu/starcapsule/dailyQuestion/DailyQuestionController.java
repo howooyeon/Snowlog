@@ -1,15 +1,12 @@
-package goormthonuniv.swu.starcapsule.myMemory;
+package goormthonuniv.swu.starcapsule.dailyQuestion;
 
 import goormthonuniv.swu.starcapsule.global.template.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
