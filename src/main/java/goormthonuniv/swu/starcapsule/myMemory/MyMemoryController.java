@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/my_memory")
@@ -39,10 +42,11 @@ public class MyMemoryController {
     public ResponseEntity<?> createMemory(@RequestHeader("Authorization") String token,
                                           @RequestParam("title") String title,
                                           @RequestParam("answer") String answer,
-                                          @RequestParam("shapeName") String shapeName) {
+                                          @RequestParam("shapeName") String shapeName,
+                                          @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
         Long userId = userService.findByAccessToken(token).getId();
-        myMemoryService.createMemory(title, answer, shapeName, userId);
+        myMemoryService.createMemory(title, answer, shapeName, userId, image);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BaseResponse.response("기록이 성공적으로 저장되었습니다."));
     }
