@@ -50,24 +50,14 @@ public class MyMemory {
     }
 
     @Builder
-    public MyMemory(String title, String answer, LocalDateTime createAt, Snowball snowball, User user, MyMemoryShape myMemoryShape) {
+    public MyMemory(String title, String answer, String imageUrl, LocalDateTime createAt, Snowball snowball, User user, MyMemoryShape myMemoryShape) {
         this.title = title;
         this.answer = answer;
+        this.imageUrl = imageUrl;
         this.createAt = createAt != null ? createAt : LocalDateTime.now();
         this.snowball = snowball;
-        this.user = user;
         this.myMemoryShape = myMemoryShape;
+        this.user = user;
     }
-
-//    @Builder
-//    public MyMemory(String title, String answer, String imageUrl, LocalDateTime createAt, Snowball snowball, User user, MyMemoryShape myMemoryShape) {
-//        this.title = title;
-//        this.answer = answer;
-//        this.imageUrl = imageUrl;
-//        this.createAt = createAt != null ? createAt : LocalDateTime.now();
-//        this.snowball = snowball;
-//        this.user = user;
-//        this.myMemoryShape = myMemoryShape;
-//    }
 
 }
