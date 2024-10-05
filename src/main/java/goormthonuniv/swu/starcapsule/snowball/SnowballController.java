@@ -48,7 +48,7 @@ public class SnowballController {
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getSnowball(@PathVariable("id") String id,
                                          @RequestParam("page") Integer page){
         Snowball snowball = snowballService.getSnowball(id);
