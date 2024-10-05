@@ -5,6 +5,7 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
+import goormthonuniv.swu.starcapsule.snowball.SnowballService;
 import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +22,21 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 @Service
 public class MemoryService {
-    private final UserService userService;
+    private final SnowballService snowballService;
     private final MemoryObjectShapeService memoryObjectShapeService;
     private final MemoryRepository memoryRepository;
     private final String BUCKET_NAME = "snowball-log-image";
 
-    public Snowball writeMemory(Long userId, String title, String answer, MultipartFile image, Long objectId) throws IOException {
+    public Snowball writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
         String imageUrl = getPublicUrl(image);
 
-        Memory memory = new Memory(title, answer, imageUrl);
+        Memory memory = new Memory(title, answer, imageUrl, writer);
         saveMemory(memory);
-        MemoryObjectShape memoryObjectShape = memoryObjectShapeService.findById(objectId);
+        MemoryObjectShape memoryObjectShape = memoryObjectShapeService.findByObjectShapeName(objectName);
 
-        User user = userService.findById(userId);
-        Snowball snowball = user.getSnowball();
+        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/api/capsule/"+userId);
         memory.setMemoryObjectShape(memoryObjectShape);
-        memory.setSnowball(user.getSnowball());
+        memory.setSnowball(snowball);
 
         return snowball;
     }

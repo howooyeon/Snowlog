@@ -38,10 +38,11 @@ public class MemoryController {
     @PostMapping("/{user_id}/write")
     public ResponseEntity<?> writeMemory(@RequestParam("title") String title,
                                          @RequestParam("answer") String answer,
-                                         @RequestParam("object_id") Long objectId,
-                                         @PathVariable("user_id") Long userId,
+                                         @RequestParam("object_name") String objectName,
+                                         @RequestParam("writer") String writer,
+                                         @PathVariable("user_id") String userId,
                                          @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        Snowball snowball = memoryService.writeMemory(userId, title, answer, image, objectId);
+        Snowball snowball = memoryService.writeMemory(userId, title, answer, writer, image, objectName);
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
     }
 }
