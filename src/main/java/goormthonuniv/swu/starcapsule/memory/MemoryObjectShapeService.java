@@ -13,4 +13,9 @@ public class MemoryObjectShapeService {
         return memoryObjectShapeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected memory object"));
     }
+
+    public MemoryObjectShape findByObjectShapeName(String objectShapeName) {
+        return memoryObjectShapeRepository.findByObjectShapeName(objectShapeName)
+                .orElseThrow(() -> new IllegalArgumentException("Unexpected memory object"));
+    }
 }

@@ -29,6 +29,9 @@ public class Memory {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "writer")
+    private String writer;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -44,10 +47,11 @@ public class Memory {
     private Snowball snowball;
 
     @Builder
-    public Memory(String title, String answer, String imageUrl) {
+    public Memory(String title, String answer, String imageUrl, String writer) {
         this.title = title;
         this.answer = answer;
         this.imageUrl = imageUrl;
+        this.writer = writer;
     }
 
     public void setMemoryObjectShape(MemoryObjectShape memoryObjectShape) {

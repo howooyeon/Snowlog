@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.snowball;
 
 import goormthonuniv.swu.starcapsule.memory.Memory;
+import goormthonuniv.swu.starcapsule.myMemory.MyMemory;
 import goormthonuniv.swu.starcapsule.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,7 +31,8 @@ public class Snowball {
 
     @OneToMany(mappedBy = "snowball")
     private List<Memory> memories = new ArrayList<>();
-
+    @OneToMany(mappedBy = "snowball")
+    private List<MyMemory> myMemories = new ArrayList<>();
     @Builder
     public Snowball(String snowballName, String sharedLink, User user) {
         this.snowballName = snowballName;

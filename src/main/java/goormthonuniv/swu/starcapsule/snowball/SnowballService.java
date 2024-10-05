@@ -26,6 +26,11 @@ public class SnowballService {
 
         return snowball;
     }
+    public Snowball getSnowball(String id){
+        String link = "http://localhost:3000/api/capsule/"+id;
+        return snowballRepository.findBySharedLink(link)
+                .orElseThrow(() -> new IllegalArgumentException("Unexpected capsule"));
+    }
 
     @Transactional
     public Snowball changeSnowballName(String email, String snowballName){

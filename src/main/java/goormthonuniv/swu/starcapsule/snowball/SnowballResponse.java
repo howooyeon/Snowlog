@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.snowball;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import goormthonuniv.swu.starcapsule.memory.Memory;
 import lombok.Getter;
 
 @Getter

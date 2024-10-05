@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface MemoryObjectShapeRepository extends JpaRepository<MemoryObjectShape, Long> {
     Optional<MemoryObjectShape> findById(Long id);
+    Optional<MemoryObjectShape> findByObjectShapeName(String objectShapeName);
 }

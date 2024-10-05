@@ -15,6 +15,9 @@ public class MemoryObjectShape {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(name = "object_name")
+    private String objectShapeName;
+
     @Column(name = "image_url")
     private String imageUrl;
 
