@@ -33,8 +33,9 @@ public class MemoryService {
         Memory memory = new Memory(title, answer, imageUrl, writer);
         saveMemory(memory);
         MemoryObjectShape memoryObjectShape = memoryObjectShapeService.findByObjectShapeName(objectName);
-
-        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/api/capsule/"+userId);
+        String sharedLink = "http://localhost:3000/api/capsule/"+userId;
+        System.out.println();
+        Snowball snowball = snowballService.findBySharedLink(sharedLink);
         memory.setMemoryObjectShape(memoryObjectShape);
         memory.setSnowball(snowball);
 

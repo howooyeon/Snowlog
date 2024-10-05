@@ -47,7 +47,7 @@ public class SnowballService {
     }
 
     public Snowball findBySharedLink(String id){
-        return snowballRepository.findBySharedLink("http://localhost:3000/api/capsule/"+id)
+        return snowballRepository.findBySharedLink(id)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected snowball"));
     }
 }

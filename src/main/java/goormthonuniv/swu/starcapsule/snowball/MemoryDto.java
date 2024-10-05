@@ -1,5 +1,6 @@
 package goormthonuniv.swu.starcapsule.snowball;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import goormthonuniv.swu.starcapsule.memory.Memory;
 import goormthonuniv.swu.starcapsule.myMemory.MyMemory;
 import lombok.Getter;
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 @Setter
 public class MemoryDto {
     private Long id;
+    @JsonProperty("object_name")
     private String objectName;
+    @JsonProperty("writer_name")
     private String writerName;
     private LocalDateTime createAt;
 
