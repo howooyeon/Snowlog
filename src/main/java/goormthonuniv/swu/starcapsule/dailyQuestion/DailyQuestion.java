@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.dailyQuestion;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class DailyQuestion {
     @Column(nullable = false, unique = true)
     private LocalDate date;
 
+    @Builder
     public DailyQuestion(String question, LocalDate date) {
         this.question = question;
         this.date = date;
