@@ -1,5 +1,6 @@
 package goormthonuniv.swu.starcapsule.myMemory;
 
+import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestion;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import goormthonuniv.swu.starcapsule.user.User;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Table(name = "my_memory")
 @NoArgsConstructor
@@ -44,19 +46,27 @@ public class MyMemory {
     @JoinColumn(name = "my_memory_shape_id", nullable = false)
     private MyMemoryShape myMemoryShape;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "daily_question_id", nullable = false)
+    private DailyQuestion dailyQuestion;
+
+    @Column(name = "is_released", nullable = false)
+    private boolean isReleased = false;
+
     @PrePersist
     public void prePersist() {
         this.createAt = LocalDateTime.now();
     }
 
     @Builder
-    public MyMemory(String title, String answer, String imageUrl, LocalDateTime createAt, Snowball snowball, User user, MyMemoryShape myMemoryShape) {
+    public MyMemory(String title, String answer, String imageUrl, LocalDateTime createAt, Snowball snowball, MyMemoryShape myMemoryShape, DailyQuestion dailyQuestion, User user) {
         this.title = title;
         this.answer = answer;
         this.imageUrl = imageUrl;
         this.createAt = createAt != null ? createAt : LocalDateTime.now();
         this.snowball = snowball;
         this.myMemoryShape = myMemoryShape;
+        this.dailyQuestion = dailyQuestion;
         this.user = user;
     }
 

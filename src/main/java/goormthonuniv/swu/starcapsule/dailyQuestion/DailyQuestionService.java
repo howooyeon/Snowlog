@@ -1,6 +1,5 @@
 package goormthonuniv.swu.starcapsule.dailyQuestion;
 
-import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +17,5 @@ public class DailyQuestionService {
         LocalDate today = LocalDate.now();
         return dailyQuestionRepository.findByDate(today);
     }
+
 }
