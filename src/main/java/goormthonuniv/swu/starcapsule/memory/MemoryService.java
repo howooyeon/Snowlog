@@ -18,6 +18,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -27,7 +29,7 @@ public class MemoryService {
     private final MemoryRepository memoryRepository;
     private final String BUCKET_NAME = "snowball-log-image";
 
-    public Snowball writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
+    public Memory writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
         String imageUrl = getPublicUrl(image);
 
         Memory memory = new Memory(title, answer, imageUrl, writer);
@@ -39,7 +41,20 @@ public class MemoryService {
         memory.setMemoryObjectShape(memoryObjectShape);
         memory.setSnowball(snowball);
 
-        return snowball;
+        return memory;
+    }
+
+    public Memory getMemory(String userId, Long memoryId) throws IOException {
+        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/api/capsule/" + userId);
+        List<Memory> memories = snowball.getMemories();
+
+        for (Memory memory : memories) {
+            if (memory.getId().equals(memoryId)) {
+                return memory;
+            }
+        }
+
+        throw new IllegalArgumentException("Memory not found with ID " + memoryId);
     }
 
     public Memory saveMemory(Memory memory){

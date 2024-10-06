@@ -29,7 +29,7 @@ public class MemoryController {
     @Operation(summary = "함께하는 기록", description = "타인이 나의 페이지의 추억을 기록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "함께하는 기록 작성 성공",
-                    content = @Content(schema = @Schema(implementation = SnowballResponse.class))),
+                    content = @Content(schema = @Schema(implementation = MemoryResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
@@ -42,7 +42,23 @@ public class MemoryController {
                                          @RequestParam("writer") String writer,
                                          @PathVariable("user_id") String userId,
                                          @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        Snowball snowball = memoryService.writeMemory(userId, title, answer, writer, image, objectName);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
+        Memory memory = memoryService.writeMemory(userId, title, answer, writer, image, objectName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new MemoryResponse(memory)));
+    }
+
+    @Operation(summary = "함께하는 기록", description = "타인이 나의 페이지의 추억을 기록합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "함께하는 기록 작성 성공",
+                    content = @Content(schema = @Schema(implementation = SnowballResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @PostMapping("/{user_id}/{memory_id}")
+    public ResponseEntity<?> getDetailMemory(@PathVariable("user_id") String userId,
+                                         @PathVariable("memory_id") Long memoryId) throws IOException {
+        Memory memory = memoryService.getMemory(userId, memoryId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new MemoryResponse(memory)));
     }
 }
