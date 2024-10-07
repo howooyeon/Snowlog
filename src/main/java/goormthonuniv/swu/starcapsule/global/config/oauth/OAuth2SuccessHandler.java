@@ -30,14 +30,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
-    public static final String MAKE_SNOWBALL_REDIRECT_PATH = "http://localhost:3000/";
-    public static final String MY_SNOWBALL_REDIRECT_PATH = "http://localhost:3000/";
+    public static final String MAKE_SNOWBALL_REDIRECT_PATH = "http://localhost:3000/snowballMake";
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
     private final UserService userService;
+    private final SnowballService snowballService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -61,7 +61,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         if(user.getSnowball() == null){
             targetUrl = getMakeSnowballPageUrl(accessToken);
         }else{
-            targetUrl = getMySnowballPageUrl(accessToken);
+            String link = user.getSnowball().getSharedLink();
+            targetUrl = getMySnowballPageUrl(link,accessToken);
         }
 
         clearAuthenticationAttributes(request, response);
@@ -117,8 +118,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .toUriString();
     }
 
-    private String getMySnowballPageUrl(String token) {
-        return UriComponentsBuilder.fromUriString(MY_SNOWBALL_REDIRECT_PATH)
+    private String getMySnowballPageUrl(String link, String token) {
+        return UriComponentsBuilder.fromUriString(link)
                 .queryParam("token", token)
                 .build()
                 .toUriString();

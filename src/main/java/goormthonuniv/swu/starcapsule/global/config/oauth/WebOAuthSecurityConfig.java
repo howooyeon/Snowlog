@@ -24,6 +24,7 @@ public class WebOAuthSecurityConfig {
     private final UserService userService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final SnowballService snowballService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -80,7 +81,8 @@ public class WebOAuthSecurityConfig {
                 refreshTokenRepository,
                 userRepository,
                 oAuth2AuthorizationRequestBasedOnCookieRepository(),
-                userService
+                userService,
+                snowballService
         );
     }
 
