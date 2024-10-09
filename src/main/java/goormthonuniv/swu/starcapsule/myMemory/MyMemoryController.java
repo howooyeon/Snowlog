@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.myMemory;
 
 import goormthonuniv.swu.starcapsule.global.template.BaseResponse;
+import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,9 +65,9 @@ public class MyMemoryController {
     @GetMapping("/{memory_id}")
     public ResponseEntity<?> getMemory(@PathVariable("memory_id") Long memoryId,
                                        @RequestHeader("Authorization") String token) {
-        Long userId = userService.findByAccessToken(token).getId();
+        User user = userService.findByAccessToken(token);
 
-        if (userId == null) {
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
@@ -96,9 +97,9 @@ public class MyMemoryController {
                                                    @RequestParam("size") int size,
                                                    @RequestHeader("Authorization") String token) {
 
-        Long userId = userService.findByAccessToken(token).getId();
+        User user = userService.findByAccessToken(token);
 
-        if (userId == null) {
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
@@ -142,9 +143,9 @@ public class MyMemoryController {
     })
     @GetMapping("/released")
     public ResponseEntity<?> getReleasedMemories(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String token) {
-        Long userId = userService.findByAccessToken(token).getId();
+        User user = userService.findByAccessToken(token);
 
-        if (userId == null) {
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
