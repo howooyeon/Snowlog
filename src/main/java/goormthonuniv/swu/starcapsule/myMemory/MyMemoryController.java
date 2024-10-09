@@ -49,8 +49,14 @@ public class MyMemoryController {
                                           @RequestParam("shapeName") String shapeName,
                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
-        Long userId = userService.findByAccessToken(token).getId();
-        myMemoryService.createMemory(title, answer, shapeName, userId, image);
+        User user = userService.findByAccessToken(token);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.response("로그인 후 이용해주세요."));
+        }
+
+        myMemoryService.createMemory(title, answer, shapeName, user.getId(), image);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BaseResponse.response("기록이 성공적으로 저장되었습니다."));
     }
