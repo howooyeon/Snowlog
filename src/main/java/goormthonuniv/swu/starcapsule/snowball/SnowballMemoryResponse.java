@@ -24,28 +24,34 @@ public class SnowballMemoryResponse {
     private Integer totalPage;
     @JsonProperty("memories")
     private List<MemoryDto> memories = new ArrayList<>();
+    @JsonProperty("server_time") // 서버 시간 필드 추가
+    private String serverTime;
 
-    public SnowballMemoryResponse(Snowball snowball, Integer page){
+    public SnowballMemoryResponse(Snowball snowball, Integer page, String isoServerTime) {
         this.id = snowball.getId();
         this.snowballName = snowball.getSnowballName();
         this.received = snowball.getMemories().size();
         this.self = snowball.getMyMemories().size();
         this.page = page;
         this.totalPage = (this.received + this.self + 5) / 6;
+        this.serverTime = isoServerTime; // 서버 시간 저장
 
-        if (snowball.getMemories() != null){
-            for(Memory memory : snowball.getMemories()) {
+        // Memory 리스트 생성
+        if (snowball.getMemories() != null) {
+            for (Memory memory : snowball.getMemories()) {
                 this.memories.add(new MemoryDto(memory));
             }
         }
-        if(snowball.getMyMemories() != null){
-            for(MyMemory myMemory : snowball.getMyMemories()) {
+        if (snowball.getMyMemories() != null) {
+            for (MyMemory myMemory : snowball.getMyMemories()) {
                 this.memories.add(new MemoryDto(myMemory));
             }
         }
 
+        // 생성일 기준으로 정렬
         this.memories.sort(Comparator.comparing(MemoryDto::getCreateAt));
 
+        // 페이지 처리
         int startIndex = (page - 1) * 6;
         int endIndex = Math.min(startIndex + 6, this.memories.size());
         if (startIndex < this.memories.size()) {
@@ -55,3 +61,4 @@ public class SnowballMemoryResponse {
         }
     }
 }
+
