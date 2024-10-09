@@ -39,7 +39,11 @@ public class MyMemoryController {
                     content = @Content(schema = @Schema(implementation = MyMemory.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @PostMapping("/write")
@@ -47,19 +51,38 @@ public class MyMemoryController {
                                           @RequestParam("title") String title,
                                           @RequestParam("answer") String answer,
                                           @RequestParam("shapeName") String shapeName,
-                                          @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+                                          @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            // 사용자 인증 확인
+            User user = userService.findByAccessToken(token);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(BaseResponse.response("로그인 후 이용해주세요."));
+            }
 
-        User user = userService.findByAccessToken(token);
+            // 필수 입력 값 유효성 검사
+            if (title.isEmpty() || answer.isEmpty() || shapeName.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponse.response("필수 값이 누락되었습니다."));
+            }
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(BaseResponse.response("로그인 후 이용해주세요."));
+            // 추억 기록 생성 로직 호출
+            myMemoryService.createMemory(title, answer, shapeName, user.getId(), image);
+
+            // 성공 응답
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(BaseResponse.response("기록이 성공적으로 저장되었습니다."));
+        } catch (IOException e) {
+            // 파일 처리 중 오류 발생 시 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponse.response("파일 업로드 중 문제가 발생했습니다."));
+        } catch (Exception e) {
+            // 기타 서버 오류 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponse.response("서버에서 오류가 발생했습니다."));
         }
-
-        myMemoryService.createMemory(title, answer, shapeName, user.getId(), image);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponse.response("기록이 성공적으로 저장되었습니다."));
     }
+
 
     @Operation(summary = "내 추억 상세 조회", description = "나의 추억을 조회합니다.")
     @ApiResponses(value = {
