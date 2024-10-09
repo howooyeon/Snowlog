@@ -23,6 +23,7 @@ public class SnowballController {
     private final UserService userService;
     private final SnowballService snowballService;
 
+    @PostMapping
     @Operation(summary = "스노우볼 생성", description = "나의 스노우볼 페이지를 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "나의 스노우볼 페이지 생성 성공",
@@ -32,12 +33,14 @@ public class SnowballController {
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @PostMapping
-    public ResponseEntity<?> makeSnowball(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> makeSnowball(@RequestHeader("Authorization") String token) {
         User user = userService.findByAccessToken(token);
         Snowball snowball = snowballService.makeSnowball(user.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.response(new SnowballDto(snowball, user.getId().toString())));
     }
+
 
     @Operation(summary = "스노우볼 가져오기", description = "나의 스노우볼을 가져옵니다.")
     @ApiResponses(value = {
@@ -61,6 +64,8 @@ public class SnowballController {
                     content = @Content(schema = @Schema(implementation = SnowballResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "401", description = "로그인 필요",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
@@ -68,7 +73,13 @@ public class SnowballController {
     public ResponseEntity<?> changeSnowballName(@RequestHeader("Authorization") String token,
                                                 @RequestParam("name") String snowballName){
         User user = userService.findByAccessToken(token);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.response("토큰이 유효하지 않거나 누락되었습니다."));
+        }
+
         Snowball snowball = snowballService.changeSnowballName(user.getEmail(), snowballName);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballResponse(snowball)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.response(new SnowballResponse(snowball)));
     }
 }
