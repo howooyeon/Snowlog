@@ -30,7 +30,7 @@ public class SnowballService {
         return snowball;
     }
     public Snowball getSnowball(String id){
-        String link = "http://localhost:3000/popup/"+id;
+        String link = "http://localhost:3000/main/"+id;
         return snowballRepository.findBySharedLink(link)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected capsule"));
     }
@@ -46,7 +46,7 @@ public class SnowballService {
     }
 
     public String makeShareLink(){
-        return "http://localhost:3000/popup/" + UUID.randomUUID().toString();
+        return "http://localhost:3000/main/" + UUID.randomUUID().toString();
     }
 
     public Snowball findBySharedLink(String id){
