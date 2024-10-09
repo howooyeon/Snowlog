@@ -1,11 +1,6 @@
 package goormthonuniv.swu.starcapsule.memory;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import goormthonuniv.swu.starcapsule.snowball.Snowball;
-import jakarta.persistence.Column;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class MemoryResponse {
