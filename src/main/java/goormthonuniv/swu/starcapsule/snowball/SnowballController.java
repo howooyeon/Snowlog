@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/api/capsule")
@@ -53,9 +56,18 @@ public class SnowballController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getSnowball(@PathVariable("id") String id,
-                                         @RequestParam("page") Integer page){
+                                         @RequestParam("page") Integer page) {
         Snowball snowball = snowballService.getSnowball(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new SnowballMemoryResponse(snowball,page)));
+
+        // 서버 시간 가져오기
+        LocalDateTime serverTime = LocalDateTime.now();
+        String isoServerTime = serverTime.format(DateTimeFormatter.ISO_DATE_TIME);
+
+        // 서버 시간을 SnowballMemoryResponse에 포함시키기
+        SnowballMemoryResponse response = new SnowballMemoryResponse(snowball, page, isoServerTime);
+
+        // 응답 반환
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(response));
     }
 
     @Operation(summary = "스노우볼 이름 수정", description = "나의 스노우볼 이름을 수정합니다.")
