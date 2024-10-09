@@ -17,6 +17,9 @@ public class SnowballService {
     public Snowball makeSnowball(String email){
         User user = userService.findByEmail(email);
 
+        if(user.getSnowball() != null){
+            throw new IllegalArgumentException("이미 생성된 스노우볼이 있습니다.");
+        }
         String sharedLink = makeShareLink();
 
         Snowball snowball = new Snowball(user.getNickname(), sharedLink, user);
