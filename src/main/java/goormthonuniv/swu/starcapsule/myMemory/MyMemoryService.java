@@ -1,5 +1,7 @@
 package goormthonuniv.swu.starcapsule.myMemory;
 
+import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestion;
+import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestionService;
 import goormthonuniv.swu.starcapsule.memory.MemoryService;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import goormthonuniv.swu.starcapsule.snowball.SnowballRepository;
@@ -22,40 +24,62 @@ public class MyMemoryService {
     private final SnowballRepository snowballRepository;
     private final MyMemoryShapeRepository myMemoryShapeRepository;
     private final MemoryService memoryService;
+    private final DailyQuestionService dailyQuestionService;
 
-    public MyMemoryService(UserService userService, MyMemoryRepository myMemoryRepository, SnowballRepository snowballRepository, MyMemoryShapeRepository myMemoryShapeRepository, MemoryService memoryService) {
+    public MyMemoryService(UserService userService, MyMemoryRepository myMemoryRepository, SnowballRepository snowballRepository, MyMemoryShapeRepository myMemoryShapeRepository, MemoryService memoryService, DailyQuestionService dailyQuestionService) {
         this.userService = userService;
         this.myMemoryRepository = myMemoryRepository;
         this.snowballRepository = snowballRepository;
         this.myMemoryShapeRepository = myMemoryShapeRepository;
         this.memoryService = memoryService;
+        this.dailyQuestionService = dailyQuestionService;
     }
 
     @Transactional
-    public void createMemory(String title, String answer, String shapeName, Long userId, MultipartFile image) throws IOException {
-        User user = userService.findById(userId);
-
+    public void createMemory(String title, String answer, String shapeName, String email, MultipartFile image) throws IOException {
+        User user = userService.findByEmail(email);
+        System.out.println(shapeName);
         MyMemoryShape memoryShape = myMemoryShapeRepository.findByName(shapeName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이름의 메모리 쉐입이 없습니다."));
 
         Snowball snowball = snowballRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자에게 스노우볼이 없습니다."));
 
-        // GCP에 이미지를 업로드하고 URL을 가져옴
-        String imageUrl = memoryService.getPublicUrl(image);
+        DailyQuestion dailyQuestion = dailyQuestionService.getTodayQuestion().orElseThrow(() -> new IllegalArgumentException("오늘의 질문이 없습니다."));
 
-        MyMemory myMemory = MyMemory.builder()
-                .title(title)
-                .answer(answer)
-                .createAt(LocalDateTime.now())
-                .snowball(snowball) // 사용자의 스노우볼 할당
-                .myMemoryShape(memoryShape) // 선택된 메모리 쉐입 할당
-                .imageUrl(imageUrl) // 이미지 URL 할당
-                .user(user)
-                .build();
+        if(image==null){
+            MyMemory myMemory = MyMemory.builder()
+                    .title(title)
+                    .answer(answer)
+                    .createAt(LocalDateTime.now())
+                    .snowball(snowball) // 사용자의 스노우볼 할당
+                    .myMemoryShape(memoryShape) // 선택된 메모리 쉐입 할당
+                    .dailyQuestion(dailyQuestion)
+                    .user(user)
+                    .build();
 
-        myMemoryRepository.save(myMemory);
+            myMemoryRepository.save(myMemory);
+        }else{
+            // GCP에 이미지를 업로드하고 URL을 가져옴
+            String imageUrl = memoryService.getPublicUrl(image);
+
+            MyMemory myMemory = MyMemory.builder()
+                    .title(title)
+                    .answer(answer)
+                    .createAt(LocalDateTime.now())
+                    .snowball(snowball) // 사용자의 스노우볼 할당
+                    .myMemoryShape(memoryShape) // 선택된 메모리 쉐입 할당
+                    .imageUrl(imageUrl) // 이미지 URL 할당
+                    .dailyQuestion(dailyQuestion)
+                    .user(user)
+                    .build();
+
+            myMemoryRepository.save(myMemory);
+        }
+
     }
+
+
 
     public MyMemory getMemoryById(Long memoryId) {
         return myMemoryRepository.findById(memoryId)
