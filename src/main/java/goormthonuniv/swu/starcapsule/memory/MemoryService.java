@@ -30,8 +30,10 @@ public class MemoryService {
     private final String BUCKET_NAME = "snowball-log-image";
 
     public Memory writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
-        String imageUrl = getPublicUrl(image);
-
+        String imageUrl = null;
+        if(image!=null){
+            imageUrl = getPublicUrl(image);
+        }
         Memory memory = new Memory(title, answer, imageUrl, writer);
         saveMemory(memory);
         MemoryObjectShape memoryObjectShape = memoryObjectShapeService.findByObjectShapeName(objectName);

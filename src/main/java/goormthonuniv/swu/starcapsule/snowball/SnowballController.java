@@ -41,7 +41,7 @@ public class SnowballController {
         Snowball snowball = snowballService.makeSnowball(user.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponse.response(new SnowballDto(snowball, user.getId().toString())));
+                .body(BaseResponse.response(new SnowballDto(snowball, user)));
     }
 
 
