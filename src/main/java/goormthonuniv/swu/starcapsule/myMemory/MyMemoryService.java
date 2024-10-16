@@ -76,10 +76,13 @@ public class MyMemoryService {
 
             myMemoryRepository.save(myMemory);
         }
-
     }
 
-
+    public boolean existsByDateAndUser(LocalDateTime date, String email) {
+        LocalDateTime startOfDay = date.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        return myMemoryRepository.existsByCreateAtAndEmail(startOfDay, endOfDay, email);
+    }
 
     public MyMemory getMemoryById(Long memoryId) {
         return myMemoryRepository.findById(memoryId)
@@ -108,4 +111,6 @@ public class MyMemoryService {
     public int countUnreleasedMemories() {
         return myMemoryRepository.countByIsReleasedFalse();
     }
+
+
 }
