@@ -18,6 +18,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional
@@ -86,4 +88,11 @@ public class MemoryService {
 
         return String.format("https://storage.googleapis.com/%s/%s", BUCKET_NAME, fileName);
     }
+
+    public boolean existsByDateAndSnowball(LocalDate date, Long snowballId) {
+        LocalDateTime startOfDay = date.atStartOfDay(); // 하루의 시작 시간
+        LocalDateTime endOfDay = date.atTime(23, 59, 59); // 하루의 끝 시간
+        return memoryRepository.existsBySnowball_IdAndCreatedAtBetween(snowballId, startOfDay, endOfDay);
+    }
+
 }
