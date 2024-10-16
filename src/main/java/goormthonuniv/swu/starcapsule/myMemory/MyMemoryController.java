@@ -52,35 +52,6 @@ public class MyMemoryController {
                                           @RequestParam("answer") String answer,
                                           @RequestParam("shapeName") String shapeName,
                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException{
-        /*try {
-            // 사용자 인증 확인
-            User user = userService.findByAccessToken(token);
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(BaseResponse.response("로그인 후 이용해주세요."));
-            }
-
-            // 필수 입력 값 유효성 검사
-            if (title.isEmpty() || answer.isEmpty() || shapeName.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(BaseResponse.response("필수 값이 누락되었습니다."));
-            }
-
-            // 추억 기록 생성 로직 호출
-            myMemoryService.createMemory(title, answer, shapeName, user.getEmail(), image);
-
-            // 성공 응답
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(BaseResponse.response("기록이 성공적으로 저장되었습니다."));
-        } catch (IOException e) {
-            // 파일 처리 중 오류 발생 시 응답
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponse.response("파일 업로드 중 문제가 발생했습니다."));
-        } catch (Exception e) {
-            // 기타 서버 오류 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponse.response("서버에서 오류가 발생했습니다."));
-        }*/
         User user = userService.findByAccessToken(token);
         myMemoryService.createMemory(title, answer, shapeName, user.getEmail(), image);
 
