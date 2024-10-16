@@ -89,10 +89,15 @@ public class MemoryService {
         return String.format("https://storage.googleapis.com/%s/%s", BUCKET_NAME, fileName);
     }
 
+    // 함께한 추억글이 있는지 없는지
     public boolean existsByDateAndSnowball(LocalDate date, Long snowballId) {
         LocalDateTime startOfDay = date.atStartOfDay(); // 하루의 시작 시간
         LocalDateTime endOfDay = date.atTime(23, 59, 59); // 하루의 끝 시간
         return memoryRepository.existsBySnowball_IdAndCreatedAtBetween(snowballId, startOfDay, endOfDay);
+    }
+
+    public List<Memory> findMemoriesByDateAndSnowballBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Long snowballId) {
+        return memoryRepository.findMemoriesByCreatedAtBetweenAndSnowballId(startDateTime, endDateTime, snowballId);
     }
 
 }
