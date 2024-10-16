@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class MyMemoryService {
@@ -78,10 +80,15 @@ public class MyMemoryService {
         }
     }
 
+    // 내 추억에 쓴 글 있는지 없는지
     public boolean existsByDateAndUser(LocalDateTime date, String email) {
         LocalDateTime startOfDay = date.withHour(0).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
         return myMemoryRepository.existsByCreateAtAndEmail(startOfDay, endOfDay, email);
+    }
+
+    public List<MyMemory> findMyMemoriesByDateAndUserBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, String email) {
+        return myMemoryRepository.findByCreateAtBetweenAndEmail(startDateTime, endDateTime, email);
     }
 
     public MyMemory getMemoryById(Long memoryId) {

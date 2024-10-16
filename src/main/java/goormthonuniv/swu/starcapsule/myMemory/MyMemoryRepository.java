@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface MyMemoryRepository extends JpaRepository<MyMemory, Long> {
@@ -17,6 +18,13 @@ public interface MyMemoryRepository extends JpaRepository<MyMemory, Long> {
     boolean existsByCreateAtAndEmail(@Param("startOfDay") LocalDateTime startOfDay,
                                      @Param("endOfDay") LocalDateTime endOfDay,
                                      @Param("email") String email);
+
+    @Query("SELECT m FROM MyMemory m WHERE m.createAt >= :startDate AND m.createAt < :endDate AND m.user.email = :email")
+    List<MyMemory> findByCreateAtBetweenAndEmail(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("email") String email);
+
     // 공개된 추억 페이징 조회
     Page<MyMemory> findByIsReleasedTrue(Pageable pageable);
 
