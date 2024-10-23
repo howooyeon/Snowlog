@@ -45,7 +45,6 @@ public class CalendarController {
         this.memoryService = memoryService;
         this.userService = userService;
     }
-
     @Operation(summary = "캘린더 퍼즐 조회", description = "캘린더에 추억 퍼즐이 생깁니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "기록 조회 성공",
@@ -55,10 +54,9 @@ public class CalendarController {
             @ApiResponse(responseCode = "401", description = "인증 실패",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/data/{snowball_id}")
+    @GetMapping("/data")
     public ResponseEntity<?> getCalendarData(
-            @RequestHeader("Authorization") String token,
-            @PathVariable("snowball_id") Long snowballId) {
+            @RequestHeader("Authorization") String token) {
 
         String serverTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         User user = userService.findByAccessToken(token);
@@ -68,17 +66,19 @@ public class CalendarController {
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
 
+        Long snowballId = user.getSnowball() != null ? user.getSnowball().getId() : null;
+
         boolean[] writtenArray = new boolean[32];
-        LocalDate startDate = LocalDate.of(2023, 11, 30);
+
+        LocalDate startDate = LocalDate.of(2024, 11, 30);
         int myMemoryCount = 0;
 
         for (int i = 0; i < 32; i++) {
             LocalDate date = startDate.plusDays(i);
 
             boolean hasMyMemory = myMemoryService.existsByDateAndUser(date.atStartOfDay(), user.getEmail());
-            boolean hasSnowballMemory = memoryService.existsByDateAndSnowball(date, snowballId);
+            boolean hasSnowballMemory = snowballId != null && memoryService.existsByDateAndSnowball(date, snowballId);
 
-            // 기록 여부 배열에 기록
             if (hasMyMemory || hasSnowballMemory) {
                 writtenArray[i] = true;
             }
@@ -108,11 +108,10 @@ public class CalendarController {
             @ApiResponse(responseCode = "404", description = "해당 날짜의 추억이 없습니다.",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/memories/{date}/{snowball_id}")
+    @GetMapping("/memories/{date}")
     public ResponseEntity<?> getMemoriesByDate(
             @RequestHeader("Authorization") String token,
-            @Parameter(description = "조회할 날짜 (yyyy-MM-dd 형식)", required = true) @PathVariable("date") String date,  // 문자열로 받기
-            @Parameter(description = "조회할 스노우볼 ID", required = true) @PathVariable("snowball_id") Long snowballId) {
+            @Parameter(description = "조회할 날짜 (yyyy-MM-dd 형식)", required = true) @PathVariable("date") String date) {
 
         User user = userService.findByAccessToken(token);
         if (user == null) {
@@ -120,16 +119,15 @@ public class CalendarController {
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
 
-        // 문자열을 LocalDateTime으로 변환
-        LocalDateTime localDateTime;
+        LocalDate localDate;
         try {
-            localDateTime = LocalDate.parse(date).atStartOfDay(); // LocalDateTime으로 변환 (하루의 시작)
+            localDate = LocalDate.parse(date); // LocalDate로 변환
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().body(BaseResponse.response("유효하지 않은 날짜 형식입니다."));
         }
 
         // 해당 날짜의 시작과 끝 시간 설정
-        LocalDateTime startOfDay = localDateTime; // 해당 날짜의 시작 시간
+        LocalDateTime startOfDay = localDate.atStartOfDay(); // 해당 날짜의 시작 시간
         LocalDateTime endOfDay = startOfDay.plusDays(1); // 해당 날짜의 끝 시간 (하루 후)
 
         // 사용자가 작성한 추억 가져오기
@@ -139,6 +137,8 @@ public class CalendarController {
                 .collect(Collectors.toList());
 
         // 스노우볼에 있는 추억 가져오기 (본인 + 친구)
+        Long snowballId = user.getSnowball() != null ? user.getSnowball().getId() : null;
+
         List<Memory> memories = memoryService.findMemoriesByDateAndSnowballBetween(startOfDay, endOfDay, snowballId);
         List<MemoryDto> memoryDTOs = memories.stream()
                 .map(MemoryDto::new)
@@ -150,8 +150,8 @@ public class CalendarController {
         response.put("memories", memoryDTOs);
 
         return ResponseEntity.ok(BaseResponse.response(response));
-
     }
+
 }
 
 
