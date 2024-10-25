@@ -2,6 +2,7 @@ package goormthonuniv.swu.starcapsule.myMemory;
 
 import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestion;
 import goormthonuniv.swu.starcapsule.dailyQuestion.DailyQuestionService;
+import goormthonuniv.swu.starcapsule.memory.Memory;
 import goormthonuniv.swu.starcapsule.memory.MemoryService;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import goormthonuniv.swu.starcapsule.snowball.SnowballRepository;
@@ -40,7 +41,7 @@ public class MyMemoryService {
     @Transactional
     public void createMemory(String title, String answer, String shapeName, String email, MultipartFile image) throws IOException {
         User user = userService.findByEmail(email);
-        System.out.println(shapeName);
+
         MyMemoryShape memoryShape = myMemoryShapeRepository.findByName(shapeName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이름의 메모리 쉐입이 없습니다."));
 
@@ -49,7 +50,7 @@ public class MyMemoryService {
 
         DailyQuestion dailyQuestion = dailyQuestionService.getTodayQuestion().orElseThrow(() -> new IllegalArgumentException("오늘의 질문이 없습니다."));
 
-        if(image==null){
+        if(image == null){
             MyMemory myMemory = MyMemory.builder()
                     .title(title)
                     .answer(answer)
@@ -96,28 +97,6 @@ public class MyMemoryService {
                 .orElse(null);
     }
 
-    // 공개된 추억 조회
-    public Page<MyMemory> getReleasedMemories(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return myMemoryRepository.findByIsReleasedTrue(pageable);
-    }
-
-    // 공개되지 않은 추억 조회
-    public Page<MyMemory> getUnreleasedMemories(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return myMemoryRepository.findByIsReleasedFalse(pageable);
-    }
-
-
-    // 공개된 추억 총 개수 조회
-    public int countReleased() {
-        return myMemoryRepository.countByIsReleasedTrue();
-    }
-
-    // 공개되지 않은 추억 총 개수 조회
-    public int countUnreleasedMemories() {
-        return myMemoryRepository.countByIsReleasedFalse();
-    }
 
 
 }

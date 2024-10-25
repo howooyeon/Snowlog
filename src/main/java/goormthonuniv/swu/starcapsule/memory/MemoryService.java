@@ -6,8 +6,6 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import goormthonuniv.swu.starcapsule.snowball.SnowballService;
-import goormthonuniv.swu.starcapsule.user.User;
-import goormthonuniv.swu.starcapsule.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -33,7 +31,7 @@ public class MemoryService {
 
     public Memory writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
         String imageUrl = null;
-        if(image!=null){
+        if(image != null){
             imageUrl = getPublicUrl(image);
         }
         Memory memory = new Memory(title, answer, imageUrl, writer);

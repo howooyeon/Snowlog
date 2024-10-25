@@ -25,17 +25,6 @@ public interface MyMemoryRepository extends JpaRepository<MyMemory, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("email") String email);
 
-    // 공개된 추억 페이징 조회
-    Page<MyMemory> findByIsReleasedTrue(Pageable pageable);
-
-    // 비공개 추억 페이징 조회
-    Page<MyMemory> findByIsReleasedFalse(Pageable pageable);
-
-    // 공개된 추억 개수
-    int countByIsReleasedTrue();
-
-    // 비공개 추억 개수
-    int countByIsReleasedFalse();
 
 
 }

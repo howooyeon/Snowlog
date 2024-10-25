@@ -1,10 +1,7 @@
 package goormthonuniv.swu.starcapsule.memory;
 
 import goormthonuniv.swu.starcapsule.global.template.BaseResponse;
-import goormthonuniv.swu.starcapsule.snowball.Snowball;
 import goormthonuniv.swu.starcapsule.snowball.SnowballResponse;
-import goormthonuniv.swu.starcapsule.user.User;
-import goormthonuniv.swu.starcapsule.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,19 +43,21 @@ public class MemoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new MemoryResponse(memory)));
     }
 
-    @Operation(summary = "함께하는 기록", description = "타인이 나의 페이지의 추억을 기록합니다.")
+    @Operation(summary = "함께한 추억 상세 조회", description = "스노우볼에서 함께한 추억 상세 정보를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "함께하는 기록 작성 성공",
+            @ApiResponse(responseCode = "200", description = "Memory 상세 조회 성공",
                     content = @Content(schema = @Schema(implementation = SnowballResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
-            @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
+            @ApiResponse(responseCode = "404", description = "요청한 memory를 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @PostMapping("/{user_id}/{memory_id}")
+    @GetMapping("/{user_id}/{memory_id}")
     public ResponseEntity<?> getDetailMemory(@PathVariable("user_id") String userId,
-                                         @PathVariable("memory_id") Long memoryId) throws IOException {
+                                             @PathVariable("memory_id") Long memoryId) throws IOException {
         Memory memory = memoryService.getMemory(userId, memoryId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(new MemoryResponse(memory)));
+        return ResponseEntity.ok(BaseResponse.response(new MemoryResponse(memory)));
     }
+
+
 }

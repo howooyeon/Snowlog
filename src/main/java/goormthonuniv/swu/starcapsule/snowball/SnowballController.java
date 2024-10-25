@@ -44,7 +44,6 @@ public class SnowballController {
                 .body(BaseResponse.response(new SnowballDto(snowball, user)));
     }
 
-
     @Operation(summary = "스노우볼 가져오기", description = "나의 스노우볼을 가져옵니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "나의 스노우볼 조회 성공",
@@ -59,14 +58,12 @@ public class SnowballController {
                                          @RequestParam("page") Integer page) {
         Snowball snowball = snowballService.getSnowball(id);
 
-        // 서버 시간 가져오기
         LocalDateTime serverTime = LocalDateTime.now();
         String isoServerTime = serverTime.format(DateTimeFormatter.ISO_DATE_TIME);
 
         // 서버 시간을 SnowballMemoryResponse에 포함시키기
         SnowballMemoryResponse response = new SnowballMemoryResponse(snowball, page, isoServerTime);
 
-        // 응답 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(response));
     }
 
@@ -94,4 +91,6 @@ public class SnowballController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BaseResponse.response(new SnowballResponse(snowball)));
     }
+
+
 }
