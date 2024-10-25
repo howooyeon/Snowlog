@@ -10,6 +10,7 @@ public class MemoryResponse {
     private String imageUrl;
     private String writer;
     private String object;
+
     public MemoryResponse(Memory memory){
         this.id = memory.getId();
         this.title = memory.getTitle();

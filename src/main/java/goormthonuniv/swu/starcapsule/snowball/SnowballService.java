@@ -53,4 +53,5 @@ public class SnowballService {
         return snowballRepository.findBySharedLink(id)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected snowball"));
     }
+
 }
