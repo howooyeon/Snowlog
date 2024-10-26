@@ -47,7 +47,7 @@ public class MemoryService {
     }
 
     public Memory getMemory(String userId, Long memoryId) throws IOException {
-        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/api/capsule/" + userId);
+        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/api/capsule/" +userId);
         List<Memory> memories = snowball.getMemories();
 
         for (Memory memory : memories) {
