@@ -2,7 +2,6 @@ package goormthonuniv.swu.starcapsule.memory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import goormthonuniv.swu.starcapsule.snowball.Snowball;
-import goormthonuniv.swu.starcapsule.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
