@@ -13,22 +13,22 @@ import java.time.LocalDateTime;
 public class MemoryDto {
     private Long id;
     @JsonProperty("object_name")
-    private String objectName;
+    private String object_name;
     @JsonProperty("writer_name")
-    private String writerName;
-    private LocalDateTime createAt;
+    private String writer_name;
+    private LocalDateTime create_at;
 
     public MemoryDto(Memory memory) {
         this.id = memory.getId();
-        this.objectName = memory.getMemoryObjectShape().getObjectShapeName();
-        this.writerName = memory.getWriter();
-        this.createAt = memory.getCreatedAt();
+        this.object_name = memory.getMemoryObjectShape().getObjectShapeName();
+        this.writer_name = memory.getWriter();
+        this.create_at = memory.getCreatedAt();
     }
 
     public MemoryDto(MyMemory myMemory) {
         this.id = myMemory.getId();
-        this.objectName = myMemory.getMyMemoryShape().getName();
-        this.writerName = myMemory.getUser().getNickname();
-        this.createAt = myMemory.getCreateAt();
+        this.object_name = myMemory.getMyMemoryShape().getName();
+        this.writer_name = myMemory.getUser().getNickname();
+        this.create_at = myMemory.getCreateAt();
     }
 }

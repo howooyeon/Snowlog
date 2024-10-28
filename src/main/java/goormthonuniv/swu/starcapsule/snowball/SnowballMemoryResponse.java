@@ -49,7 +49,7 @@ public class SnowballMemoryResponse {
         }
 
         // 생성일 기준으로 정렬
-        this.memories.sort(Comparator.comparing(MemoryDto::getCreateAt));
+        this.memories.sort(Comparator.comparing(MemoryDto::getCreate_at));
 
         // 페이지 처리
         int startIndex = (page - 1) * 6;
