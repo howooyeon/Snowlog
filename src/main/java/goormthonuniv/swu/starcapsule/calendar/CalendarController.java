@@ -89,9 +89,9 @@ public class CalendarController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("myMemoryCount", myMemoryCount);
-        response.put("serverTime", serverTime);
-        response.put("writtenArray", writtenArray);
+        response.put("my_memory_count", myMemoryCount);
+        response.put("server_time", serverTime);
+        response.put("written_array", writtenArray);
 
         return ResponseEntity.ok(BaseResponse.response(response));
     }
@@ -146,7 +146,7 @@ public class CalendarController {
 
         // 응답 데이터 생성
         Map<String, Object> response = new HashMap<>();
-        response.put("myMemories", myMemoryDTOs);
+        response.put("my_memory", myMemoryDTOs);
         response.put("memories", memoryDTOs);
 
         return ResponseEntity.ok(BaseResponse.response(response));
