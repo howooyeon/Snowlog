@@ -2,9 +2,12 @@ package goormthonuniv.swu.starcapsule.user;
 
 import goormthonuniv.swu.starcapsule.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -20,7 +23,7 @@ public class UserService {
         }
 
         if (!tokenProvider.validToken(token)) {
-            throw new IllegalArgumentException("Invalid token");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
         }
 
         Authentication authentication = tokenProvider.getAuthentication(token);
