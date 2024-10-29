@@ -48,7 +48,7 @@ public class MyMemory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_question_id", nullable = false)
     private DailyQuestion dailyQuestion;
-    
+
     @PrePersist
     public void prePersist() {
         this.createAt = LocalDateTime.now();
@@ -67,3 +67,4 @@ public class MyMemory {
     }
 
 }
+

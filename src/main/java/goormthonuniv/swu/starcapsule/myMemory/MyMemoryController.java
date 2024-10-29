@@ -40,6 +40,8 @@ public class MyMemoryController {
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "409", description = "이미 오늘의 기록이 존재합니다.",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "500", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
@@ -51,6 +53,12 @@ public class MyMemoryController {
                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException{
 
         User user = userService.findByAccessToken(token);
+
+        if (myMemoryService.existsMemoryForUser(user.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(BaseResponse.response("이미 오늘의 기록이 존재합니다."));
+        }
+
         myMemoryService.createMemory(title, answer, shapeName, user.getEmail(), image);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -85,8 +93,5 @@ public class MyMemoryController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponse.response(memoryDto));
     }
-
-
-
 
 }
