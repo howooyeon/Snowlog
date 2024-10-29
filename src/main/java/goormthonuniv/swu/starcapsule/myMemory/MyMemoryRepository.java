@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public interface MyMemoryRepository extends JpaRepository<MyMemory, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("email") String email);
 
-
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END FROM MyMemory m WHERE m.user.email = :userEmail AND FUNCTION('DATE', m.createAt) = :date")
+    boolean existsByUserEmailAndDate(@Param("userEmail") String userEmail, @Param("date") LocalDate date);
 
 }
