@@ -1,6 +1,7 @@
 package goormthonuniv.swu.starcapsule.dailyQuestion;
 
 import goormthonuniv.swu.starcapsule.global.template.BaseResponse;
+import goormthonuniv.swu.starcapsule.myMemory.MyMemoryService;
 import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class DailyQuestionController {
 
     private final DailyQuestionService dailyQuestionService;
     private final UserService userService;
+    private final MyMemoryService myMemoryService;
 
     @Operation(summary = "오늘의 질문 조회", description = "오늘의 질문을 조회합니다.")
     @ApiResponses(value = {
@@ -40,6 +42,11 @@ public class DailyQuestionController {
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.response("로그인 후 이용해주세요."));
+        }
+
+        boolean hasWrittenMyMemory = myMemoryService.existsMemoryForUser(user.getEmail());
+        if (hasWrittenMyMemory) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.response("이미 작성한 기록이 있습니다."));
         }
 
         Optional<DailyQuestion> todayQuestion = dailyQuestionService.getTodayQuestion();
