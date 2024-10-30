@@ -2,6 +2,7 @@ package goormthonuniv.swu.starcapsule.calendar;
 
 import goormthonuniv.swu.starcapsule.global.template.BaseResponse;
 import goormthonuniv.swu.starcapsule.memory.Memory;
+import goormthonuniv.swu.starcapsule.memory.MemoryResponse;
 import goormthonuniv.swu.starcapsule.memory.MemoryService;
 import goormthonuniv.swu.starcapsule.myMemory.MyMemory;
 import goormthonuniv.swu.starcapsule.myMemory.MyMemoryDto;
@@ -70,7 +71,7 @@ public class CalendarController {
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
 
-        Long snowballId = user.getSnowball() != null ? user.getSnowball().getId() : null;
+        Snowball snowball = snowballService.getMySnowball(user.getEmail());
 
         boolean[] writtenArray = new boolean[32];
 
@@ -81,7 +82,7 @@ public class CalendarController {
             LocalDate date = startDate.plusDays(i);
 
             boolean hasMyMemory = myMemoryService.existsByDateAndUser(date.atStartOfDay(), user.getEmail());
-            boolean hasSnowballMemory = snowballId != null && memoryService.existsByDateAndSnowball(date, snowballId);
+            boolean hasSnowballMemory = snowball != null && memoryService.existsByDateAndSnowball(date, snowball.getId());
 
             if (hasMyMemory || hasSnowballMemory) {
                 writtenArray[i] = true;
@@ -143,8 +144,8 @@ public class CalendarController {
         Snowball snowball = snowballService.getMySnowball(user.getEmail());
 
         List<Memory> memories = memoryService.findMemoriesByDateAndSnowballBetween(startOfDay, endOfDay, snowball.getId());
-        List<MemoryDto> memoryDTOs = memories.stream()
-                .map(MemoryDto::new)
+        List<MemoryResponse> memoryDTOs = memories.stream()
+                .map(MemoryResponse::new)
                 .collect(Collectors.toList());
 
         // 응답 데이터 생성
