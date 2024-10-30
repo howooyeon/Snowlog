@@ -44,27 +44,57 @@ public class SnowballController {
                 .body(BaseResponse.response(new SnowballDto(snowball, user)));
     }
 
-    @Operation(summary = "스노우볼 가져오기", description = "나의 스노우볼을 가져옵니다.")
+    @Operation(summary = "스노우볼 조회", description = "스노우볼을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "나의 스노우볼 조회 성공",
+            @ApiResponse(responseCode = "200", description = "스노우볼 조회 성공",
                     content = @Content(schema = @Schema(implementation = SnowballMemoryResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청에 대한 응답을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSnowball(@PathVariable("id") String id,
-                                         @RequestParam("page") Integer page) {
-        Snowball snowball = snowballService.getSnowball(id);
+    public ResponseEntity<?> getSnowball(
+            @PathVariable("id") String id,
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam("page") Integer page) {
 
+        Snowball snowball;
+
+        // Authorization 헤더가 있는 경우: 개인 스노우볼 조회
+        if (token != null) {
+            User user = userService.findByAccessToken(token);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.response("인증 실패"));
+            }
+
+            snowball = snowballService.getMySnowball(user.getEmail());
+
+            if (snowball == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.response("스노우볼을 찾을 수 없습니다."));
+            }
+
+        } else {
+            // Authorization 헤더가 없고 ID가 있는 경우: 공개된 스노우볼 조회
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.response("스노우볼 ID가 필요합니다."));
+            }
+
+            snowball = snowballService.getSnowball(id);
+
+            if (snowball == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.response("스노우볼을 찾을 수 없습니다."));
+            }
+        }
+
+        // 공통 응답 데이터 구성
         LocalDateTime serverTime = LocalDateTime.now();
         String isoServerTime = serverTime.format(DateTimeFormatter.ISO_DATE_TIME);
-
-        // 서버 시간을 SnowballMemoryResponse에 포함시키기
         SnowballMemoryResponse response = new SnowballMemoryResponse(snowball, page, isoServerTime);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.response(response));
+        return ResponseEntity.ok(BaseResponse.response(response));
     }
 
     @Operation(summary = "스노우볼 이름 수정", description = "나의 스노우볼 이름을 수정합니다.")
