@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface SnowballRepository extends JpaRepository<Snowball, Long> {
     Optional<Snowball> findByUser(User user);
     Optional<Snowball> findBySharedLink(String sharedLink);
+    Optional<Snowball> findByUserEmail(String email);
 }

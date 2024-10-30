@@ -35,6 +35,11 @@ public class SnowballService {
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected capsule"));
     }
 
+    public Snowball getMySnowball(String email) {
+        return snowballRepository.findByUserEmail(email)
+                .orElse(null);
+    }
+
     @Transactional
     public Snowball changeSnowballName(String email, String snowballName){
         User user = userService.findByEmail(email);
