@@ -7,6 +7,8 @@ import goormthonuniv.swu.starcapsule.myMemory.MyMemory;
 import goormthonuniv.swu.starcapsule.myMemory.MyMemoryDto;
 import goormthonuniv.swu.starcapsule.myMemory.MyMemoryService;
 import goormthonuniv.swu.starcapsule.snowball.MemoryDto;
+import goormthonuniv.swu.starcapsule.snowball.Snowball;
+import goormthonuniv.swu.starcapsule.snowball.SnowballService;
 import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,12 +39,14 @@ public class CalendarController {
 
     private final MyMemoryService myMemoryService;
     private final MemoryService memoryService;
+    private final SnowballService snowballService;
     private final UserService userService;
 
     @Autowired
-    public CalendarController(MyMemoryService myMemoryService, MemoryService memoryService, UserService userService) {
+    public CalendarController(MyMemoryService myMemoryService, MemoryService memoryService, SnowballService snowballService, UserService userService) {
         this.myMemoryService = myMemoryService;
         this.memoryService = memoryService;
+        this.snowballService = snowballService;
         this.userService = userService;
     }
     @Operation(summary = "캘린더 퍼즐 조회", description = "캘린더에 추억 퍼즐이 생깁니다.")
@@ -136,10 +140,9 @@ public class CalendarController {
                 .map(MyMemoryDto::fromEntity)
                 .collect(Collectors.toList());
 
-        // 스노우볼에 있는 추억 가져오기 (본인 + 친구)
-        Long snowballId = user.getSnowball() != null ? user.getSnowball().getId() : null;
+        Snowball snowball = snowballService.getMySnowball(user.getEmail());
 
-        List<Memory> memories = memoryService.findMemoriesByDateAndSnowballBetween(startOfDay, endOfDay, snowballId);
+        List<Memory> memories = memoryService.findMemoriesByDateAndSnowballBetween(startOfDay, endOfDay, snowball.getId());
         List<MemoryDto> memoryDTOs = memories.stream()
                 .map(MemoryDto::new)
                 .collect(Collectors.toList());
