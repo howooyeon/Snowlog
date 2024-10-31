@@ -40,7 +40,7 @@ public class WebOAuthSecurityConfig {
         http.cors();
 
         http.authorizeRequests()
-                .requestMatchers("/api/token","/api/accounts/signUp","/api/share_memory/**","/api/capsule/{id:[\\w-]+}").permitAll()
+                .requestMatchers("/api/token","/api/accounts/signUp","/api/share_memory/**","/api/capsule/{id:[\\w-]+}", "/api/capsule/{id}/pagination", "/api/capsule/{id}/info").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
