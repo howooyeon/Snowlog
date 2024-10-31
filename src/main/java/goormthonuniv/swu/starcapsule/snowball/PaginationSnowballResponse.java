@@ -10,32 +10,11 @@ import java.util.Comparator;
 import java.util.List;
 
 @Getter
-public class SnowballMemoryResponse {
-    private SnowballInfo snowballInfo;
+public class PaginationSnowballResponse {
     private PaginationData paginationData;
 
-    public SnowballMemoryResponse(Snowball snowball, Integer page, String isoServerTime) {
-        this.snowballInfo = new SnowballInfo(snowball.getId(), snowball.getSnowballName(),
-                snowball.getMyMemories().size(), snowball.getMemories().size());
+    public PaginationSnowballResponse(Integer page, String isoServerTime, Snowball snowball) {
         this.paginationData = new PaginationData(page, isoServerTime, snowball);
-    }
-
-    @Getter
-    public static class SnowballInfo {
-        private Long id;
-        @JsonProperty("snowball_name")
-        private String snowballName;
-        @JsonProperty("self")
-        private Integer self;
-        @JsonProperty("received")
-        private Integer received;
-
-        public SnowballInfo(Long id, String snowballName, Integer self, Integer received) {
-            this.id = id;
-            this.snowballName = snowballName;
-            this.self = self;
-            this.received = received;
-        }
     }
 
     @Getter
@@ -55,7 +34,6 @@ public class SnowballMemoryResponse {
             int totalMemories = snowball.getMemories().size() + snowball.getMyMemories().size();
             this.totalPage = (totalMemories + 5) / 6;
 
-            // Memory 리스트 생성 및 정렬
             if (snowball.getMemories() != null) {
                 for (Memory memory : snowball.getMemories()) {
                     this.memories.add(new MemoryDto(memory));
@@ -68,14 +46,10 @@ public class SnowballMemoryResponse {
             }
             this.memories.sort(Comparator.comparing(MemoryDto::getCreate_at));
 
-            // 페이지 처리
             int startIndex = (page - 1) * 6;
             int endIndex = Math.min(startIndex + 6, this.memories.size());
-            if (startIndex < this.memories.size()) {
-                this.memories = this.memories.subList(startIndex, endIndex);
-            } else {
-                this.memories = new ArrayList<>(); // 페이지 범위 초과 시 빈 리스트 반환
-            }
+            this.memories = startIndex < this.memories.size() ?
+                    this.memories.subList(startIndex, endIndex) : new ArrayList<>();
         }
     }
 }
