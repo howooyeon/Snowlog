@@ -132,9 +132,9 @@ public class SnowballController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.response("스노우볼 ID가 필요합니다."));
             }
 
-            snowball = snowballService.getSnowball(id);
-
-            if (snowball == null) {
+            try{
+                snowball = snowballService.getSnowball(id);
+            } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.response("스노우볼을 찾을 수 없습니다."));
             }
         }
