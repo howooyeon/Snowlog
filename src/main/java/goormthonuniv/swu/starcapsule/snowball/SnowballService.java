@@ -4,7 +4,9 @@ import goormthonuniv.swu.starcapsule.user.User;
 import goormthonuniv.swu.starcapsule.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -29,6 +31,7 @@ public class SnowballService {
 
         return snowball;
     }
+
     public Snowball getSnowball(String id){
         String link = "http://localhost:3000/main/"+id;
         return snowballRepository.findBySharedLink(link)
@@ -56,7 +59,7 @@ public class SnowballService {
 
     public Snowball findBySharedLink(String id){
         return snowballRepository.findBySharedLink(id)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected snowball"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "id에 해당하는 snowball이 없습니다."));
     }
 
 }
