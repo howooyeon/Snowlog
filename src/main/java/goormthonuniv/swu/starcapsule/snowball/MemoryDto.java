@@ -28,7 +28,7 @@ public class MemoryDto {
     public MemoryDto(MyMemory myMemory) {
         this.id = myMemory.getId();
         this.object_name = myMemory.getMyMemoryShape().getName();
-        this.writer_name = myMemory.getUser().getNickname();
+        this.writer_name = myMemory.getSnowball().getSnowballName();
         this.create_at = myMemory.getCreateAt();
     }
 }
