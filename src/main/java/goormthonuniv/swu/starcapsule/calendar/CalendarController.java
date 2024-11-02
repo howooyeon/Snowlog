@@ -78,7 +78,7 @@ public class CalendarController {
         LocalDate startDate = LocalDate.of(2024, 11, 30);
         int myMemoryCount = 0;
 
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 31; i++) {
             LocalDate date = startDate.plusDays(i);
 
             boolean hasMyMemory = myMemoryService.existsByDateAndUser(date.atStartOfDay(), user.getEmail());
