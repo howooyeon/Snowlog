@@ -1,15 +1,19 @@
 package goormthonuniv.swu.starcapsule.global.config.jwt;
 
+import goormthonuniv.swu.starcapsule.refreshToken.RefreshToken;
+import goormthonuniv.swu.starcapsule.refreshToken.RefreshTokenRepository;
 import goormthonuniv.swu.starcapsule.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -21,6 +25,9 @@ import java.util.Set;
 public class TokenProvider {
 
     private final JwtProperties jwtProperties;
+    private final RefreshTokenProvider refreshTokenProvider;
+    private final AccessTokenProvider accessTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public String generateToken(User user, Duration expiredAt) {
         Date now = new Date();
@@ -78,4 +85,27 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
+    public RefreshToken getStoredRefreshToken(String token) {
+        // Access Token에 연결된 Refresh Token을 데이터베이스나 캐시에서 조회
+        return refreshTokenRepository.findRefreshTokenByRefreshToken(token).orElse(null);
+    }
+
+    public boolean validRefreshToken(String refreshToken) {
+        // Refresh Token이 유효한지 확인합니다. 예를 들어, 만료 여부를 확인 가능
+        return refreshTokenProvider.isValid(refreshToken);
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        // 유효한 Refresh Token이 주어지면 새로운 Access Token을 생성하여 반환
+        if (validRefreshToken(refreshToken)) {
+            // Refresh Token에서 사용자 정보를 추출하여 새로운 Access Token을 생성
+            String userId = refreshTokenProvider.getUserIdFromToken(refreshToken);
+            return accessTokenProvider.createToken(userId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token");
+        }
+    }
+
 }
