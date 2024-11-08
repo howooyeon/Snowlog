@@ -1,6 +1,8 @@
 package goormthonuniv.swu.starcapsule.user;
 
 import goormthonuniv.swu.starcapsule.global.config.jwt.TokenProvider;
+import goormthonuniv.swu.starcapsule.refreshToken.RefreshToken;
+import goormthonuniv.swu.starcapsule.refreshToken.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -23,13 +25,27 @@ public class UserService {
         }
 
         if (!tokenProvider.validToken(token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+            // Access Token이 만료된 경우, Refresh Token으로 새로운 Access Token 발급 시도
+            RefreshToken refreshToken = tokenProvider.getStoredRefreshToken(token);
+
+            if (refreshToken != null && tokenProvider.validRefreshToken(String.valueOf(refreshToken))) {
+                // Refresh Token이 유효하다면 새로운 Access Token 발급
+                String newAccessToken = tokenProvider.refreshAccessToken(String.valueOf(refreshToken));
+
+                // 발급된 새로운 Access Token으로 인증 객체 생성
+                Authentication authentication = tokenProvider.getAuthentication(newAccessToken);
+
+                return (User) authentication.getPrincipal();
+            } else {
+                // Refresh Token도 유효하지 않으면 인증 실패 처리
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+            }
         }
 
         Authentication authentication = tokenProvider.getAuthentication(token);
         return (User) authentication.getPrincipal();
-
     }
+
     public User save(User user) {
         return userRepository.save(user);
     }
