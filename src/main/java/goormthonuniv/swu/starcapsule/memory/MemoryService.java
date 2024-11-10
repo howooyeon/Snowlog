@@ -37,7 +37,7 @@ public class MemoryService {
         Memory memory = new Memory(title, answer, imageUrl, writer);
         saveMemory(memory);
         MemoryObjectShape memoryObjectShape = memoryObjectShapeService.findByObjectShapeName(objectName);
-        String sharedLink = "http://localhost:3000/main/"+userId;
+        String sharedLink = "https://develop.snowlog.pages.dev/main/"+userId;
         System.out.println();
         Snowball snowball = snowballService.findBySharedLink(sharedLink);
         memory.setMemoryObjectShape(memoryObjectShape);
@@ -47,7 +47,7 @@ public class MemoryService {
     }
 
     public Memory getMemory(String userId, Long memoryId) throws IOException {
-        Snowball snowball = snowballService.findBySharedLink("http://localhost:3000/main/" +userId);
+        Snowball snowball = snowballService.findBySharedLink("https://develop.snowlog.pages.dev/main/" +userId);
         List<Memory> memories = snowball.getMemories();
 
         for (Memory memory : memories) {
