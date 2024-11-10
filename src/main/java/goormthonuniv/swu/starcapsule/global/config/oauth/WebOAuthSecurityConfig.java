@@ -45,7 +45,7 @@ public class WebOAuthSecurityConfig {
                 .anyRequest().permitAll();
 
         http.oauth2Login()
-                .loginPage("http://localhost:3000/")
+                .loginPage("https://develop.snowlog.pages.dev/")
                 .authorizationEndpoint()
                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                 .and()
