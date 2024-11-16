@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "daily_question")
@@ -21,10 +21,10 @@ public class DailyQuestion {
     private String question;
 
     @Column(nullable = false, unique = true)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Builder
-    public DailyQuestion(String question, LocalDate date) {
+    public DailyQuestion(String question, LocalDateTime date) {
         this.question = question;
         this.date = date;
     }
