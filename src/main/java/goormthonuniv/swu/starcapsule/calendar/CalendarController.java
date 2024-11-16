@@ -86,13 +86,9 @@ public class CalendarController {
             LocalDate date = startDate.plusDays(i);
 
             boolean hasMyMemory = myMemoryService.existsByDateAndUser(date.atStartOfDay(), user.getEmail());
-            boolean hasSnowballMemory = snowball != null && memoryService.existsByDateAndSnowball(date, snowball.getId());
-
-            if (hasMyMemory || hasSnowballMemory) {
-                writtenArray[i] = true;
-            }
 
             if (hasMyMemory) {
+                writtenArray[i] = true;
                 myMemoryCount++;
             }
         }
