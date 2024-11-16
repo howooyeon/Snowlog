@@ -71,7 +71,7 @@ public class CalendarController {
                     .body(BaseResponse.response("로그인 후 이용해주세요."));
         }
 
-        Snowball snowball = snowballService.getMySnowball(user.getEmail());
+        Snowball snowball = snowballService.getSnowballByUserEmail(user.getEmail());
 
         boolean[] writtenArray = new boolean[32];
 
@@ -141,7 +141,7 @@ public class CalendarController {
                 .map(MyMemoryDto::fromEntity)
                 .collect(Collectors.toList());
 
-        Snowball snowball = snowballService.getMySnowball(user.getEmail());
+        Snowball snowball = snowballService.getSnowballByUserEmail(user.getEmail());
 
         List<Memory> memories = memoryService.findMemoriesByDateAndSnowballBetween(startOfDay, endOfDay, snowball.getId());
         List<MemoryResponse> memoryDTOs = memories.stream()
