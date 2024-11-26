@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class DailyQuestionDto {
     private Long id;
     private String question;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
     public static DailyQuestionDto fromEntity(DailyQuestion dailyQuestion) {
