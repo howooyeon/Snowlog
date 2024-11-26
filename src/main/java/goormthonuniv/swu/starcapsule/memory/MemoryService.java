@@ -27,7 +27,7 @@ public class MemoryService {
     private final SnowballService snowballService;
     private final MemoryObjectShapeService memoryObjectShapeService;
     private final MemoryRepository memoryRepository;
-    private final String BUCKET_NAME = "snowball-log-image";
+    private final String BUCKET_NAME = "snowball-image";
 
     public Memory writeMemory(String userId, String title, String answer, String writer, MultipartFile image, String objectName) throws IOException {
         String imageUrl = null;
