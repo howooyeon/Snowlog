@@ -17,6 +17,7 @@ public class DailyQuestionService {
     // 오늘 날짜에 해당하는 질문을 가져옵니다.
     public Optional<DailyQuestion> getTodayQuestion() {
         LocalDateTime todayStartOfDay = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
+        System.out.println(todayStartOfDay);
         return dailyQuestionRepository.findByDate(todayStartOfDay);
     }
 }
