@@ -64,7 +64,7 @@ public class MemoryService {
     }
 
     public String getPublicUrl(MultipartFile image) throws IOException {
-        ClassPathResource resource = new ClassPathResource("snowballlog-442904-ffaee9fa7eda.json");
+        ClassPathResource resource = new ClassPathResource("snowballlog-442904-83d49811a181.json");
 
         InputStream credentialsStream = resource.getInputStream();
         GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsStream);
