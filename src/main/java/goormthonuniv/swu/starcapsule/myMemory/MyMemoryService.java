@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -99,7 +100,7 @@ public class MyMemoryService {
 
 
     public boolean existsMemoryForUser(String email) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return myMemoryRepository.existsByUserEmailAndDate(email, today);
     }
 }
