@@ -7,11 +7,11 @@ import lombok.Getter;
 public class SnowballDto {
     private Long id;
     private String snowballName;
-    private Long userId;
+    private String userId;
 
     public SnowballDto(Snowball snowball, User user) {
         this.id = snowball.getId();
         this.snowballName = snowball.getSnowballName();
-        this.userId = user.getId();
+        this.userId = snowball.getUid();
     }
 }
