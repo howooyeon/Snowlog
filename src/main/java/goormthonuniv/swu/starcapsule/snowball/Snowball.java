@@ -26,6 +26,8 @@ public class Snowball {
     @Column(name = "shared_link")
     private String sharedLink;
 
+    private String uid;
+
     @OneToOne(mappedBy = "snowball")
     private User user;
 
