@@ -76,7 +76,7 @@ public class CalendarController {
         boolean[] writtenArray = new boolean[32];
 
         // 시작일을 15일로 설정
-        LocalDate startDate = LocalDate.of(2024, 11, 15);
+        LocalDate startDate = LocalDate.of(2024, 11, 30);
 //        LocalDate startDate = LocalDate.of(2024, 11, 30);
         
 
