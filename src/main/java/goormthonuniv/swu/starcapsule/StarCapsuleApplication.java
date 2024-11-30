@@ -19,7 +19,8 @@ public class StarCapsuleApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://develop.snowlog.pages.dev/")
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://develop.snowlog.pages.dev/",
+                                "https://snowlog.pages.dev/")
                         .allowedMethods(
                                 HttpMethod.GET.name(),
                                 HttpMethod.HEAD.name(),
