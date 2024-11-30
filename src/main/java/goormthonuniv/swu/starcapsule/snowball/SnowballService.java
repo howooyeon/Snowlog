@@ -36,7 +36,7 @@ public class SnowballService {
     }
 
     public Snowball getSnowball(String id) {
-        String link = "https://develop.snowlog.pages.dev/main/" + id;
+        String link = "https://snowlog.pages.dev/main/" + id;
         return snowballRepository.findBySharedLink(link)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 capsule이 없습니다."));
     }
@@ -69,7 +69,7 @@ public class SnowballService {
     }
 
     public String makeShareLink() {
-        return "https://develop.snowlog.pages.dev/main/" + UUID.randomUUID().toString();
+        return "https://snowlog.pages.dev/main/" + UUID.randomUUID().toString();
     }
 
     public Snowball findBySharedLink(String id) {
