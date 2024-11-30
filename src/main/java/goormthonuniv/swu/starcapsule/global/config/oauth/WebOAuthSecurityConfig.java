@@ -8,6 +8,7 @@ import goormthonuniv.swu.starcapsule.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,7 +41,8 @@ public class WebOAuthSecurityConfig {
         http.cors();
 
         http.authorizeRequests()
-                .requestMatchers("/api/token","/api/accounts/signUp","/api/share_memory/**","/api/capsule/{id:[\\w-]+}", "/api/capsule/{id}/pagination", "/api/capsule/{id}/info").permitAll()
+                .requestMatchers("/api/token","/api/accounts/signUp","/api/capsule/{id:[\\w-]+}", "/api/capsule/{id}/pagination", "/api/capsule/{id}/info").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/share_memory/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
 
